@@ -1,18 +1,18 @@
 package com.xyz.platformsvc.helper;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xyz.dal.entity.movie.MovieEntity;
-import com.xyz.dal.entity.show.TheaterShowEntity;
 import com.xyz.dal.entity.theater.TheaterEntity;
 import com.xyz.dal.repository.MovieRepository;
 import com.xyz.dal.repository.TheaterRepository;
-import com.xyz.dal.repository.TheaterShowRepository;
 import com.xyz.platformsvc.mapper.MapperFactory;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.Theater;
-import com.xyz.platformsvc.rest.model.TheaterShow;
+import com.xyz.platformsvc.rest.model.TheaterShowSchedule;
 
 @Component
 public class PlatformServiceHelper {
@@ -24,7 +24,7 @@ public class PlatformServiceHelper {
 	TheaterRepository theaterRepository;
 
 	@Autowired
-	TheaterShowRepository theaterShowRepository;	
+	ShowOpsHelper showOpsHelper;
 	
 	public Movie createMovie(Movie movie) {
 		MovieEntity movieEntity = MapperFactory.MOVIE_MAPPER.toEntity(movie);
@@ -38,10 +38,9 @@ public class PlatformServiceHelper {
 		return MapperFactory.THEATER_MAPPER.toRestObj(theaterEntity);
 	}
 
-	public TheaterShow createTheaterShow(TheaterShow theaterShow) {
-		TheaterShowEntity showEntity = MapperFactory.THEATER_SHOW_MAPPER.toEntity(theaterShow);
-		theaterShowRepository.save(showEntity);
-		return MapperFactory.THEATER_SHOW_MAPPER.toRestObj(showEntity);
+	public TheaterShowSchedule createTheaterShowSchedule(TheaterShowSchedule showSchedule, Long theaterId, Long movieId, LocalDate date) {
+		return showOpsHelper.createAndGetShowSchedule(theaterId, movieId, date, showSchedule);
 	}
 	
+
 }

@@ -3,13 +3,17 @@ package com.xyz.platformsvc.rest.model;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
-public class ShowSchedule {
+public class Show extends RepresentationModel<Show> {
+
+	private Long id;
 
 	@JsonFormat(pattern = "HH:mm")
 	@JsonSerialize(using = LocalTimeSerializer.class)
@@ -18,7 +22,15 @@ public class ShowSchedule {
 
 	private TheaterScreen theaterScreen;
 
-	private List<SeatingClassGroup> seatingData;
+	private List<SeatClassPriceGroup> showPricingList;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public LocalTime getTime() {
 		return time;
@@ -26,10 +38,6 @@ public class ShowSchedule {
 
 	public TheaterScreen getTheaterScreen() {
 		return theaterScreen;
-	}
-
-	public List<SeatingClassGroup> getSeatingData() {
-		return seatingData;
 	}
 
 	public void setTime(LocalTime time) {
@@ -40,8 +48,12 @@ public class ShowSchedule {
 		this.theaterScreen = theaterScreen;
 	}
 
-	public void setSeatingData(List<SeatingClassGroup> seatingData) {
-		this.seatingData = seatingData;
+	public List<SeatClassPriceGroup> getShowPricingList() {
+		return showPricingList;
+	}
+
+	public void setShowPricingList(List<SeatClassPriceGroup> showPricingList) {
+		this.showPricingList = showPricingList;
 	}
 
 }

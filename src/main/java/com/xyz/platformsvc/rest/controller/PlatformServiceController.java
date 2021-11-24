@@ -2,8 +2,11 @@ package com.xyz.platformsvc.rest.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.platformsvc.helper.PlatformServiceHelper;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.Theater;
-import com.xyz.platformsvc.rest.model.TheaterShow;
+import com.xyz.platformsvc.rest.model.TheaterShowSchedule;
 
 @SpringBootApplication
 @RestController
@@ -40,10 +43,9 @@ public class PlatformServiceController {
 		return newTheater;
 	}
 
-	@PostMapping(value = "/theaters/{theaterId}/shows", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	private TheaterShow createShow(@PathVariable("theaterId") Long theaterId, @RequestBody TheaterShow theaterShow) {
-		TheaterShow newTheaterShow = platformServiceHelper.createTheaterShow(theaterShow);
-		newTheaterShow.add(linkTo(PlatformServiceController.class).slash("theatershows").slash(newTheaterShow.getTheaterShowId()).withSelfRel());
+	@PostMapping(value = "/theaters/{theaterId}/movies/{movieId}/shows/{date}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	private TheaterShowSchedule createShows(@PathVariable("theaterId") Long theaterId, @PathVariable("movieId") Long movieId,@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestBody TheaterShowSchedule theaterShowSchedule) {
+		TheaterShowSchedule newTheaterShow = platformServiceHelper.createTheaterShowSchedule(theaterShowSchedule, theaterId, movieId, date);
 		return newTheaterShow;
 	}
 }
