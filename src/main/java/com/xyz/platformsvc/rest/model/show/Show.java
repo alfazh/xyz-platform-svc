@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.rest.model;
+package com.xyz.platformsvc.rest.model.show;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.xyz.platformsvc.rest.model.TheaterScreen;
 
 public class Show extends RepresentationModel<Show> {
 

@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.util;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -9,7 +9,7 @@ import org.springframework.hateoas.LinkRelation;
 
 import com.xyz.platformsvc.rest.controller.PlatformServiceController;
 
-public class LinkHelper {
+public class ResourceLinkGenerator {
 	
 	public static final LinkRelation SELF = LinkRelation.of("self");
 	public static final LinkRelation MOVIE = LinkRelation.of("movie");

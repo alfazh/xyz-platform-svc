@@ -1,15 +1,42 @@
-package com.xyz.platformsvc.mapper;
+package com.xyz.platformsvc.helper;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xyz.dal.entity.movie.MovieEntity;
+import com.xyz.dal.repository.MovieRepository;
 import com.xyz.platformsvc.rest.model.Movie;
-import com.xyz.platformsvc.util.ResourceLinkGenerator;
 
 @Component
-public class MovieMapper implements DataMapper<MovieEntity, Movie>{
+public class MovieOpsHelper {
+	
+	@Autowired
+	MovieRepository movieRepository;
+	
+	public Movie createMovie(Movie movie) {
+		// TODO validate movie object
+		
+		MovieEntity newEntity = toEntityObj(movie);
+		
+		//FIXME exception handling
+		newEntity = movieRepository.saveAndFlush(newEntity);
+		
+		return toRestObj(newEntity);
+	}
+	
+	public Optional<Movie> getMovie(Long movieId) {
+		Optional<MovieEntity> movieEntity = movieRepository.findById(movieId);
+		if(movieEntity.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toRestObj(movieEntity.get()));
+	}
+	
 
-	@Override
-	public MovieEntity toEntityObj(Movie movie) {
+	private MovieEntity toEntityObj(Movie movie) {
 		MovieEntity movieEntity = new MovieEntity();
 		movieEntity.setName(movie.getName());
 		movieEntity.setDescription(movie.getDescription());
@@ -20,8 +47,7 @@ public class MovieMapper implements DataMapper<MovieEntity, Movie>{
 		return movieEntity;
 	}
 
-	@Override
-	public Movie toRestObj(MovieEntity movieEntity) {
+	private Movie toRestObj(MovieEntity movieEntity) {
 		Movie movie = new Movie();
 		movie.setMovieId(movieEntity.getMovieId());
 		movie.setName(movieEntity.getName());
@@ -30,8 +56,6 @@ public class MovieMapper implements DataMapper<MovieEntity, Movie>{
 		movie.setLanguage(movieEntity.getLanguage());
 		movie.setRunTime(movieEntity.getRunTime());
 		movie.setMovieFormat(movieEntity.getMovieFormat());
-		movie.add(ResourceLinkGenerator.getMovieLink(movie.getMovieId(), ResourceLinkGenerator.SELF));
 		return movie;
 	}
-	
 }

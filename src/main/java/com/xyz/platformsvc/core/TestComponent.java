@@ -14,11 +14,10 @@ import com.xyz.dal.entity.movie.Genre;
 import com.xyz.dal.entity.movie.Language;
 import com.xyz.dal.entity.movie.MovieEntity;
 import com.xyz.dal.entity.movie.MovieFormat;
-import com.xyz.dal.entity.show.TheaterShowEntity;
-import com.xyz.dal.entity.show.TheaterShowScheduleEntity;
+import com.xyz.dal.entity.theater.show.ShowEntity;
+import com.xyz.dal.entity.theater.show.ShowScheduleEntity;
 import com.xyz.dal.repository.MovieRepository;
-import com.xyz.dal.repository.ShowRepository;
-import com.xyz.dal.repository.TheaterShowScheduleRepository;
+import com.xyz.dal.repository.ShowScheduleRepository;
 
 @Component
 public class TestComponent {
@@ -27,7 +26,7 @@ public class TestComponent {
 	MovieRepository movieRepository;
 	
 	@Autowired
-	TheaterShowScheduleRepository showScheduleRepository;
+	ShowScheduleRepository showScheduleRepository;
 	
 	@PostConstruct
 	public void testDBOperations() {
@@ -46,11 +45,11 @@ public class TestComponent {
 			movieRepository.save(movie);
 		}
 		
-		List<TheaterShowScheduleEntity> shows = showScheduleRepository.findShows(1L, LocalDate.of(2021, 11, 28), "Pune");
-		System.out.println("Found shows playing at below theaters");
+		List<ShowScheduleEntity> shows = showScheduleRepository.getShowSchedule(1L, LocalDate.of(2021, 11, 28), "Pune");
+		System.out.println("Found shows playing at below theaters"); 
 		shows.stream().forEach(s -> {
 			System.out.println("Theater: "+s.getTheaterCatalog().getTheater().getName()+". Date: "+s.getDate());
-			System.out.println("Show times: "+s.getShowList().stream().map(TheaterShowEntity::getTime).collect(Collectors.toList()));
+			System.out.println("Show times: "+s.getShowList().stream().map(ShowEntity::getTime).collect(Collectors.toList()));
 			
 		});
 	}	

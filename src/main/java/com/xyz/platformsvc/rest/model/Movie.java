@@ -21,7 +21,7 @@ public class Movie extends RepresentationModel<Movie> {
 	private Genre genre;
 	private String imageLink;
 	private Language language;
-	private int runTime;
+	private Integer runTime;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@JsonSerialize(using = LocalDateSerializer.class)
@@ -54,7 +54,7 @@ public class Movie extends RepresentationModel<Movie> {
 		return language;
 	}
 
-	public int getRunTime() {
+	public Integer getRunTime() {
 		return runTime;
 	}
 
@@ -90,7 +90,7 @@ public class Movie extends RepresentationModel<Movie> {
 		this.language = language;
 	}
 
-	public void setRunTime(int runTime) {
+	public void setRunTime(Integer runTime) {
 		this.runTime = runTime;
 	}
 

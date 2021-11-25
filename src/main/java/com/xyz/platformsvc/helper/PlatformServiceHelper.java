@@ -1,46 +1,80 @@
 package com.xyz.platformsvc.helper;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.xyz.dal.entity.movie.MovieEntity;
-import com.xyz.dal.entity.theater.TheaterEntity;
-import com.xyz.dal.repository.MovieRepository;
-import com.xyz.dal.repository.TheaterRepository;
-import com.xyz.platformsvc.mapper.MapperFactory;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.Theater;
-import com.xyz.platformsvc.rest.model.TheaterShowSchedule;
+import com.xyz.platformsvc.rest.model.TheaterMovieCatalog;
+import com.xyz.platformsvc.rest.model.show.ShowSchedule;
+import com.xyz.platformsvc.rest.model.view.CatalogSearch;
+import com.xyz.platformsvc.rest.model.view.ScheduleSearch;
+import com.xyz.platformsvc.rest.model.view.ScheduleSearchResult;
+import com.xyz.platformsvc.rest.model.view.TheaterSearch;
+import com.xyz.platformsvc.rest.model.view.TheaterShowSearchResult;
 
 @Component
 public class PlatformServiceHelper {
 	
 	@Autowired
-	MovieRepository movieRepository;
+	private MovieOpsHelper movieOpsHelper;
+	
+	@Autowired
+	private TheaterOpsHelper theaterOpsHelper;
 
 	@Autowired
-	TheaterRepository theaterRepository;
+	private ShowScheduleOpsHelper showScheduleOpsHelper;
 
 	@Autowired
-	ShowOpsHelper showOpsHelper;
+	private QueryViewOpsHelper queryOpsHelper;
+	
+	private TheaterCatalogOpsHelper theaterCatalogOpsHelper;
 	
 	public Movie createMovie(Movie movie) {
-		MovieEntity movieEntity = MapperFactory.MOVIE_MAPPER.toEntity(movie);
-		movieEntity = movieRepository.save(movieEntity);
-		return MapperFactory.MOVIE_MAPPER.toRestObj(movieEntity);
+		return movieOpsHelper.createMovie(movie);
 	}
 
 	public Theater createTheater(Theater theater) {
-		TheaterEntity theaterEntity = MapperFactory.THEATER_MAPPER.toEntity(theater);
-		theaterRepository.save(theaterEntity);
-		return MapperFactory.THEATER_MAPPER.toRestObj(theaterEntity);
+		return theaterOpsHelper.createTheater(theater);
 	}
 
-	public TheaterShowSchedule createTheaterShowSchedule(TheaterShowSchedule showSchedule, Long theaterId, Long movieId, LocalDate date) {
-		return showOpsHelper.createAndGetShowSchedule(theaterId, movieId, date, showSchedule);
+	public TheaterMovieCatalog createTheaterMovieCatalog(TheaterMovieCatalog theaterMovieCatalog) {
+		return theaterCatalogOpsHelper.createTheaterCatalog(theaterMovieCatalog);
 	}
 	
+	public ShowSchedule getShowSchedule(Long showScheduleId) {
+		return showScheduleOpsHelper.getShowSchedule(showScheduleId);
+	}
+	
+	public List<ShowSchedule> getShowSchedule(Long theaterId, Long movieId, LocalDate date) {
+		return showScheduleOpsHelper.getShowSchedule(theaterId, movieId, date);
+	}
+	
+	public ShowSchedule createShowSchedule(ShowSchedule showSchedule) {
+		return showScheduleOpsHelper.createShowSchedule(showSchedule);
+	}
 
+	public ShowSchedule updateShowSchedule(Long showScheduleId, ShowSchedule showSchedule) {
+		return showScheduleOpsHelper.updateShowSchedule(showScheduleId, showSchedule);
+	}
+	
+	public void deleteShowSchedule(Long showScheduleId) {
+		showScheduleOpsHelper.deleteShowSchedule(showScheduleId);
+	}
+
+	public Optional<TheaterShowSearchResult> findTheaters(TheaterSearch search) {
+		return queryOpsHelper.findTheaters(search.getMovieId(), search.getDate(), search.getCity()); 
+	}
+
+	public Optional<TheaterMovieCatalog> findTheaterMovieCatalog(CatalogSearch catalogSearch) {
+		return queryOpsHelper.findTheaterMovieCatalog(catalogSearch.getTheaterId(), catalogSearch.getMovieId());
+	}
+
+	public ScheduleSearchResult findSchedules(ScheduleSearch scheduleSearch) {
+		return queryOpsHelper.findSchedules(scheduleSearch); 
+	}
 }
