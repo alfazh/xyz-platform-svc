@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 import com.xyz.dal.entity.theater.show.ShowEntity;
 import com.xyz.dal.entity.theater.show.ShowPricingEntity;
 import com.xyz.dal.entity.theater.show.ShowScheduleEntity;
-import com.xyz.dal.repository.show.ShowRepository;
 import com.xyz.dal.repository.show.ShowScheduleRepository;
-import com.xyz.dal.repository.theater.TheaterMovieCatalogRepository;
 import com.xyz.dal.repository.theater.screen.TheaterScreenRepository;
 import com.xyz.platformsvc.exception.InvalidRequestException;
 import com.xyz.platformsvc.exception.PlatformServiceException;
@@ -33,19 +31,13 @@ public class ShowScheduleService {
 	private static final Logger logger = LoggerFactory.getLogger(ShowScheduleService.class);
 	
 	@Autowired
-	ShowScheduleMapper showScheduleMapper;
+	private ShowScheduleMapper showScheduleMapper;
 	
 	@Autowired
-	TheaterScreenRepository theaterScreenRepository;
+	private TheaterScreenRepository theaterScreenRepository;
 
 	@Autowired
-	ShowScheduleRepository showScheduleRepository;
-	
-	@Autowired
-	ShowRepository showRepository;
-	
-	@Autowired
-	TheaterMovieCatalogRepository theaterCatalogRepository;
+	private ShowScheduleRepository showScheduleRepository;
 	
 	public ShowSchedule getShow(ShowScheduleEntity showScheduleEntity) {
 		return showScheduleMapper.toRestObj(showScheduleEntity);
@@ -167,6 +159,30 @@ public class ShowScheduleService {
 			logger.error(errorString);
 			throw new PlatformServiceException(errorString, e);
 		}
+	}
+	
+	public ShowScheduleMapper getShowScheduleMapper() {
+		return showScheduleMapper;
+	}
+
+	public TheaterScreenRepository getTheaterScreenRepository() {
+		return theaterScreenRepository;
+	}
+
+	public ShowScheduleRepository getShowScheduleRepository() {
+		return showScheduleRepository;
+	}
+
+	public void setShowScheduleMapper(ShowScheduleMapper showScheduleMapper) {
+		this.showScheduleMapper = showScheduleMapper;
+	}
+
+	public void setTheaterScreenRepository(TheaterScreenRepository theaterScreenRepository) {
+		this.theaterScreenRepository = theaterScreenRepository;
+	}
+
+	public void setShowScheduleRepository(ShowScheduleRepository showScheduleRepository) {
+		this.showScheduleRepository = showScheduleRepository;
 	}
 	
 	public static class ShowIdentifier {

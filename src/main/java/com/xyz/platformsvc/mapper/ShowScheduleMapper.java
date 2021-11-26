@@ -129,9 +129,6 @@ public class ShowScheduleMapper implements DomainDataMapper<ShowScheduleEntity, 
 	@Override
 	public ShowSchedule toRestObj(ShowScheduleEntity showScheduleEntity) {
 		Optional<TheaterMovieCatalogEntity> theaterMovieCatalogEntity = theaterCatalogRepository.findById(showScheduleEntity.getTheaterCatalog().getTheaterMovieCatalogId());
-		if(theaterMovieCatalogEntity.isEmpty()) {
-			//exception
-		}
 		
 		Long theaterId = theaterMovieCatalogEntity.get().getTheater().getTheaterId();
 		Long movieId = theaterMovieCatalogEntity.get().getMovie().getMovieId();
@@ -163,6 +160,22 @@ public class ShowScheduleMapper implements DomainDataMapper<ShowScheduleEntity, 
 		showSchedule.add(ResourceLinkGenerator.getMovieLink(movieId, ResourceLinkGenerator.MOVIE));
 		
 		return showSchedule;
+	}
+
+	public TheaterMovieCatalogRepository getTheaterCatalogRepository() {
+		return theaterCatalogRepository;
+	}
+
+	public TheaterScreenSeatLayoutRepository getScreenSeatLayoutRepository() {
+		return screenSeatLayoutRepository;
+	}
+
+	public void setTheaterCatalogRepository(TheaterMovieCatalogRepository theaterCatalogRepository) {
+		this.theaterCatalogRepository = theaterCatalogRepository;
+	}
+
+	public void setScreenSeatLayoutRepository(TheaterScreenSeatLayoutRepository screenSeatLayoutRepository) {
+		this.screenSeatLayoutRepository = screenSeatLayoutRepository;
 	}
 
 }
