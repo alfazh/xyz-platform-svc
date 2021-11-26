@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,9 @@ import com.xyz.platformsvc.mapper.TheaterCatalogMapper;
 import com.xyz.platformsvc.rest.model.TheaterMovieCatalog;
 
 @Component
-public class TheaterCatalogOpsHelper {
+public class TheaterCatalogService {
 
-	private static final Logger logger = LoggerFactory.getLogger(TheaterCatalogOpsHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(TheaterCatalogService.class);
 	
 	@Autowired
 	private TheaterCatalogMapper theaterCatalogMapper;

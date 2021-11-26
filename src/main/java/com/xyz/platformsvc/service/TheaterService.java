@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.service;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ import com.xyz.platformsvc.mapper.TheaterMapper;
 import com.xyz.platformsvc.rest.model.Theater;
 
 @Component
-public class TheaterOpsHelper {
+public class TheaterService {
 
 	@Autowired
 	TheaterMapper theaterMapper;
@@ -23,7 +23,7 @@ public class TheaterOpsHelper {
 	@Autowired
 	TheaterRepository theaterRepository;
 
-	private static final Logger logger = LoggerFactory.getLogger(TheaterOpsHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(TheaterService.class);
 	
 	public Theater createTheater(Theater theater) throws PlatformServiceException {
 		// TODO validate

@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,9 +28,9 @@ import com.xyz.platformsvc.mapper.ShowScheduleMapper;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
 
 @Component
-public class ShowScheduleOpsHelper {
+public class ShowScheduleService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ShowScheduleOpsHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(ShowScheduleService.class);
 	
 	@Autowired
 	ShowScheduleMapper showScheduleMapper;
@@ -96,8 +96,8 @@ public class ShowScheduleOpsHelper {
 			throw new InvalidRequestException("Cannot update theater or movie associated with this schedule");
 		} 
 
-		Map<ShowIdentifier, ShowEntity> existingShowMap = existingEntity.getShowList().parallelStream().collect(Collectors.toMap(ShowScheduleOpsHelper::getShowIdentifier, m->m));
-		Map<ShowIdentifier, ShowEntity> newShowMap = newEntity.getShowList().parallelStream().collect(Collectors.toMap(ShowScheduleOpsHelper::getShowIdentifier,m->m));
+		Map<ShowIdentifier, ShowEntity> existingShowMap = existingEntity.getShowList().parallelStream().collect(Collectors.toMap(ShowScheduleService::getShowIdentifier, m->m));
+		Map<ShowIdentifier, ShowEntity> newShowMap = newEntity.getShowList().parallelStream().collect(Collectors.toMap(ShowScheduleService::getShowIdentifier,m->m));
 		
 		List<ShowEntity> showDeleteList = existingShowMap.entrySet().stream().filter(e -> !newShowMap.containsKey(e.getKey())).map(Entry::getValue).collect(Collectors.toList());
 		

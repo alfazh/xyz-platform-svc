@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,7 +27,7 @@ import com.xyz.platformsvc.rest.model.search.TheaterShowView;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
 
 @Component
-public class QueryViewOpsHelper {
+public class QueryService {
 	
 	@Autowired
 	ShowScheduleRepository showScheduleRepository;

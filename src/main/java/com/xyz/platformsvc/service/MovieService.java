@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.helper;
+package com.xyz.platformsvc.service;
 
 import java.util.Optional;
 
@@ -15,9 +15,9 @@ import com.xyz.platformsvc.mapper.MovieMapper;
 import com.xyz.platformsvc.rest.model.Movie;
 
 @Component
-public class MovieOpsHelper {
+public class MovieService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MovieOpsHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
 	
 	@Autowired
 	MovieMapper movieMapper;

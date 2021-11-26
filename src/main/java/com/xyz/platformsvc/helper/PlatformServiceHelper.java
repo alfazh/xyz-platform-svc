@@ -19,67 +19,72 @@ import com.xyz.platformsvc.rest.model.search.ScheduleSearchResult;
 import com.xyz.platformsvc.rest.model.search.TheaterSearch;
 import com.xyz.platformsvc.rest.model.search.TheaterShowSearchResult;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
+import com.xyz.platformsvc.service.MovieService;
+import com.xyz.platformsvc.service.QueryService;
+import com.xyz.platformsvc.service.ShowScheduleService;
+import com.xyz.platformsvc.service.TheaterCatalogService;
+import com.xyz.platformsvc.service.TheaterService;
 
 @Component
-public class PlatformService {
+public class PlatformServiceHelper {
 	
 	@Autowired
-	private MovieOpsHelper movieOpsHelper;
+	private MovieService movieService;
 	
 	@Autowired
-	private TheaterOpsHelper theaterOpsHelper;
+	private TheaterService theaterService;
 
 	@Autowired
-	private ShowScheduleOpsHelper showScheduleOpsHelper;
+	private ShowScheduleService showScheduleService;
 
 	@Autowired
-	private QueryViewOpsHelper queryOpsHelper;
+	private QueryService queryService;
 	
 	@Autowired
-	private TheaterCatalogOpsHelper theaterCatalogOpsHelper;
+	private TheaterCatalogService theaterCatalogService;
 	
 	public Movie createMovie(Movie movie) throws PlatformServiceException {
-		return movieOpsHelper.createMovie(movie);
+		return movieService.createMovie(movie);
 	}
 	
 	public Movie getMovie(Long movieId) throws ResourceNotFoundException {
-		return movieOpsHelper.getMovie(movieId);
+		return movieService.getMovie(movieId);
 	}
 
 	public Theater createTheater(Theater theater) throws PlatformServiceException {
-		return theaterOpsHelper.createTheater(theater);
+		return theaterService.createTheater(theater);
 	}
 	
 	public Theater getTheater(Long theaterId) throws ResourceNotFoundException {
-		return theaterOpsHelper.getTheater(theaterId);
+		return theaterService.getTheater(theaterId);
 	}
 
 	public TheaterMovieCatalog createTheaterMovieCatalog(TheaterMovieCatalog theaterMovieCatalog) throws PlatformServiceException {
-		return theaterCatalogOpsHelper.createTheaterCatalog(theaterMovieCatalog);
+		return theaterCatalogService.createTheaterCatalog(theaterMovieCatalog);
 	}
 	
 	public ShowSchedule getShowSchedule(Long showScheduleId) throws ResourceNotFoundException {
-		return showScheduleOpsHelper.getShowSchedule(showScheduleId);
+		return showScheduleService.getShowSchedule(showScheduleId);
 	}
 	
 	public List<ShowSchedule> getShowSchedule(Long theaterId, Long movieId, LocalDate date) {
-		return showScheduleOpsHelper.getShowSchedule(theaterId, movieId, date);
+		return showScheduleService.getShowSchedule(theaterId, movieId, date);
 	}
 	
 	public ShowSchedule createShowSchedule(ShowSchedule showSchedule) throws PlatformServiceException {
-		return showScheduleOpsHelper.createShowSchedule(showSchedule);
+		return showScheduleService.createShowSchedule(showSchedule);
 	}
 
 	public ShowSchedule updateShowSchedule(Long showScheduleId, ShowSchedule showSchedule) throws ResourceNotFoundException, InvalidRequestException, PlatformServiceException {
-		return showScheduleOpsHelper.updateShowSchedule(showScheduleId, showSchedule);
+		return showScheduleService.updateShowSchedule(showScheduleId, showSchedule);
 	}
 	
 	public void deleteShowSchedule(Long showScheduleId) throws ResourceNotFoundException, PlatformServiceException{
-		showScheduleOpsHelper.deleteShowSchedule(showScheduleId);
+		showScheduleService.deleteShowSchedule(showScheduleId);
 	}
 	
 	public TheaterMovieCatalog findTheaterMovieCatalog(CatalogSearch catalogSearch) throws ResourceNotFoundException {
-		Optional<TheaterMovieCatalog> theaterMovieCatalog  = queryOpsHelper.findTheaterMovieCatalog(catalogSearch.getTheaterId(), catalogSearch.getMovieId());
+		Optional<TheaterMovieCatalog> theaterMovieCatalog  = queryService.findTheaterMovieCatalog(catalogSearch.getTheaterId(), catalogSearch.getMovieId());
 		if(theaterMovieCatalog.isEmpty()) {
 			throw new ResourceNotFoundException(String.format("Fail to lookup theater movie catalog for movieId: %d, theater: %d",catalogSearch.getMovieId(), catalogSearch.getTheaterId()));
 		}
@@ -87,10 +92,10 @@ public class PlatformService {
 	}
 
 	public TheaterShowSearchResult findTheaters(TheaterSearch search) {
-		return  queryOpsHelper.findTheaters(search.getMovieId(), search.getDate(), search.getCity());
+		return  queryService.findTheaters(search.getMovieId(), search.getDate(), search.getCity());
 	}
 	
 	public ScheduleSearchResult findSchedules(ScheduleSearch scheduleSearch) {
-		return queryOpsHelper.findSchedules(scheduleSearch);
+		return queryService.findSchedules(scheduleSearch);
 	}
 }

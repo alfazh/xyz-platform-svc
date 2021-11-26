@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.platformsvc.exception.InvalidRequestException;
 import com.xyz.platformsvc.exception.PlatformServiceException;
 import com.xyz.platformsvc.exception.ResourceNotFoundException;
-import com.xyz.platformsvc.helper.PlatformService;
+import com.xyz.platformsvc.helper.PlatformServiceHelper;
 import com.xyz.platformsvc.rest.api.PlatformServiceAPI;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.Theater;
@@ -36,7 +36,7 @@ import com.xyz.platformsvc.rest.model.show.ShowSchedule;
 public class PlatformServiceController implements PlatformServiceAPI {
 
 	@Autowired
-	PlatformService platformServiceHelper;
+	PlatformServiceHelper platformServiceHelper;
 
 	@Override
 	@PostMapping(value = "/movies", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
