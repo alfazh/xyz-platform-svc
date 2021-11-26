@@ -1,0 +1,20 @@
+2021-11-26 19:57:26 - Starting Application using Java 14.0.1 on DESKTOP-3GB4RTP with PID 20104 (C:\Work\EW\sapient\platform-svc\target\classes started by Alf in C:\Work\EW\sapient\platform-svc)
+2021-11-26 19:57:26 - No active profile set, falling back to default profiles: default
+2021-11-26 19:57:27 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-11-26 19:57:27 - Finished Spring Data repository scanning in 86 ms. Found 9 JPA repository interfaces.
+2021-11-26 19:57:28 - Tomcat initialized with port(s): 8080 (http)
+2021-11-26 19:57:28 - Starting service [Tomcat]
+2021-11-26 19:57:28 - Starting Servlet engine: [Apache Tomcat/9.0.55]
+2021-11-26 19:57:28 - Initializing Spring embedded WebApplicationContext
+2021-11-26 19:57:28 - Root WebApplicationContext: initialization completed in 2346 ms
+2021-11-26 19:57:29 - HHH000204: Processing PersistenceUnitInfo [name: db]
+2021-11-26 19:57:29 - HHH000412: Hibernate ORM core version 5.6.1.Final
+2021-11-26 19:57:29 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-11-26 19:57:29 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2021-11-26 19:57:30 - HikariPool-1 - Starting...
+2021-11-26 19:57:30 - HikariPool-1 - Start completed.
+2021-11-26 19:57:30 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-11-26 19:57:30 - Initialized JPA EntityManagerFactory for persistence unit 'db'
+2021-11-26 19:57:31 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-11-26 19:57:32 - Tomcat started on port(s): 8080 (http) with context path ''
+2021-11-26 19:57:32 - Started Application in 6.648 seconds (JVM running for 7.156)
