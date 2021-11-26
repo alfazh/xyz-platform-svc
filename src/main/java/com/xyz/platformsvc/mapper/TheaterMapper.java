@@ -10,7 +10,7 @@ import com.xyz.platformsvc.rest.model.Theater;
 import com.xyz.platformsvc.util.ResourceLinkGenerator;
 
 @Component
-public class TheaterMapper implements DataMapper<TheaterEntity, Theater> {
+public class TheaterMapper implements DomainDataMapper<TheaterEntity, Theater> {
 
 	@Autowired
 	TheaterScreenMapper theaterScreenMapper;
@@ -24,6 +24,7 @@ public class TheaterMapper implements DataMapper<TheaterEntity, Theater> {
 		theaterEntity.setCity(theater.getCity());
 		theaterEntity.setScreens(theater.getScreens().stream().map(theaterScreenMapper::toEntityObj).collect(Collectors.toList()));
 		theaterEntity.getScreens().stream().forEach(c -> c.setTheater(theaterEntity));
+		theaterEntity.getScreens().forEach(s -> s.getSeatRowList().stream().forEach(l->l.setTheater(theaterEntity)));
 		return theaterEntity;
 	}
 

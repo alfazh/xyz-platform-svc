@@ -14,21 +14,21 @@ import com.xyz.dal.entity.movie.MovieEntity;
 import com.xyz.dal.entity.theater.TheaterMovieCatalogEntity;
 import com.xyz.dal.entity.theater.show.ShowEntity;
 import com.xyz.dal.entity.theater.show.ShowScheduleEntity;
-import com.xyz.dal.repository.ShowScheduleRepository;
-import com.xyz.dal.repository.TheaterMovieCatalogRepository;
+import com.xyz.dal.repository.show.ShowScheduleRepository;
+import com.xyz.dal.repository.theater.TheaterMovieCatalogRepository;
 import com.xyz.platformsvc.mapper.ShowScheduleMapper;
 import com.xyz.platformsvc.mapper.TheaterCatalogMapper;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.TheaterMovieCatalog;
+import com.xyz.platformsvc.rest.model.search.ScheduleSearch;
+import com.xyz.platformsvc.rest.model.search.ScheduleSearchResult;
+import com.xyz.platformsvc.rest.model.search.TheaterShowSearchResult;
+import com.xyz.platformsvc.rest.model.search.TheaterShowView;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
-import com.xyz.platformsvc.rest.model.view.ScheduleSearch;
-import com.xyz.platformsvc.rest.model.view.ScheduleSearchResult;
-import com.xyz.platformsvc.rest.model.view.TheaterShowSearchResult;
-import com.xyz.platformsvc.rest.model.view.TheaterShowView;
 
 @Component
 public class QueryViewOpsHelper {
-
+	
 	@Autowired
 	ShowScheduleRepository showScheduleRepository;
 
@@ -41,11 +41,11 @@ public class QueryViewOpsHelper {
 	@Autowired
 	ShowScheduleMapper showScheduleMapper;
 	
-	public Optional<TheaterShowSearchResult> findTheaters(Long movieId, LocalDate date, String city) {
+	public TheaterShowSearchResult findTheaters(Long movieId, LocalDate date, String city) {
 		List<ShowScheduleEntity> showScheduleList = showScheduleRepository.getShowSchedule(movieId, date, city);
 
 		if (showScheduleList.isEmpty()) {
-			return Optional.empty();
+			return TheaterShowSearchResult.EMPTY;
 		}
 
 		List<TheaterShowView> theaterShowList = new ArrayList<>();
@@ -65,12 +65,15 @@ public class QueryViewOpsHelper {
 			theaterShowList.add(theaterShowView);
 		}
 
-		return Optional.of(new TheaterShowSearchResult(movie, theaterShowList));
+		return new TheaterShowSearchResult(movie, theaterShowList);
 	}
 
 	public Optional<TheaterMovieCatalog> findTheaterMovieCatalog(Long theaterId, Long movieId) {
 		TheaterMovieCatalogEntity catalogEntity = theaterCatalogRepository.findByTheaterAndMovie(theaterId, movieId);
-
+		if(catalogEntity==null) {
+			return Optional.empty();
+		}
+		
 		return Optional.of(theaterCatalogMapper.toRestObj(catalogEntity));
 	}
 

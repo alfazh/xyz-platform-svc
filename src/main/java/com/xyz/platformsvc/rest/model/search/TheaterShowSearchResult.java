@@ -1,5 +1,6 @@
-package com.xyz.platformsvc.rest.model.view;
+package com.xyz.platformsvc.rest.model.search;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.hateoas.RepresentationModel;
@@ -12,6 +13,8 @@ public class TheaterShowSearchResult extends RepresentationModel<TheaterShowSear
 
 	private final List<TheaterShowView> theaters;
 
+	public static final TheaterShowSearchResult EMPTY = new TheaterShowSearchResult(null, Collections.emptyList());
+	
 	public TheaterShowSearchResult(Movie movie, List<TheaterShowView> theaters) {
 		super();
 		this.movie = movie;

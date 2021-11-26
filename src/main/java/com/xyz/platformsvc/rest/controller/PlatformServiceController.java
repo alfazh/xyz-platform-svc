@@ -1,8 +1,11 @@
 package com.xyz.platformsvc.rest.controller;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,16 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xyz.platformsvc.helper.PlatformServiceHelper;
+import com.xyz.platformsvc.exception.InvalidRequestException;
+import com.xyz.platformsvc.exception.PlatformServiceException;
+import com.xyz.platformsvc.exception.ResourceNotFoundException;
+import com.xyz.platformsvc.helper.PlatformService;
+import com.xyz.platformsvc.rest.api.PlatformServiceAPI;
 import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.rest.model.Theater;
 import com.xyz.platformsvc.rest.model.TheaterMovieCatalog;
+import com.xyz.platformsvc.rest.model.search.CatalogSearch;
+import com.xyz.platformsvc.rest.model.search.ScheduleSearch;
+import com.xyz.platformsvc.rest.model.search.ScheduleSearchResult;
+import com.xyz.platformsvc.rest.model.search.TheaterSearch;
+import com.xyz.platformsvc.rest.model.search.TheaterShowSearchResult;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
-import com.xyz.platformsvc.rest.model.view.CatalogSearch;
-import com.xyz.platformsvc.rest.model.view.ScheduleSearch;
-import com.xyz.platformsvc.rest.model.view.ScheduleSearchResult;
-import com.xyz.platformsvc.rest.model.view.TheaterSearch;
-import com.xyz.platformsvc.rest.model.view.TheaterShowSearchResult;
 
 @SpringBootApplication
 @RestController
@@ -29,71 +36,81 @@ import com.xyz.platformsvc.rest.model.view.TheaterShowSearchResult;
 public class PlatformServiceController implements PlatformServiceAPI {
 
 	@Autowired
-	PlatformServiceHelper platformServiceHelper;
+	PlatformService platformServiceHelper;
 
 	@Override
 	@PostMapping(value = "/movies", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Movie createMovie(@RequestBody Movie movie) {
-		return platformServiceHelper.createMovie(movie);
+	public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) throws InvalidRequestException, PlatformServiceException {
+		Movie newMovie = platformServiceHelper.createMovie(movie);
+		URI location = URI.create("/movies"+newMovie.getMovieId());
+		return ResponseEntity.created(location).body(newMovie);
 	}
 	
-	@GetMapping(value = "/movies/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Movie getMovie(@PathVariable("movieId") Long movieId) {
-		return null;
+	@GetMapping(value = "/movies/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Movie getMovie(@PathVariable("movieId") Long movieId) throws ResourceNotFoundException {
+		return platformServiceHelper.getMovie(movieId);
 	}
 	
 	@PostMapping(value = "/theaters", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Theater createTheater(@RequestBody Theater theater) {
-		return platformServiceHelper.createTheater(theater);
+	public ResponseEntity<Theater> createTheater(@RequestBody Theater theater) throws InvalidRequestException, PlatformServiceException {
+		Theater newTheater = platformServiceHelper.createTheater(theater);
+		URI location = URI.create("/theaters"+newTheater.getTheaterId());
+		return ResponseEntity.created(location).body(newTheater);
 	}
 
 	@Override
-	public Theater getTheater(Long id) {
-		return null;
+	@GetMapping(value = "/theaters/{theaterId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Theater getTheater(@PathVariable("theaterId") Long theaterId) throws ResourceNotFoundException{
+		return platformServiceHelper.getTheater(theaterId);
 	}
 	
 	@Override
 	@PostMapping(value = "/theatermoviecatalog", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TheaterMovieCatalog createTheaterMovieCatalog(@RequestBody TheaterMovieCatalog theaterMovieCatalog) {
-		return platformServiceHelper.createTheaterMovieCatalog(theaterMovieCatalog);
+	public ResponseEntity<TheaterMovieCatalog> createTheaterMovieCatalog(@RequestBody TheaterMovieCatalog theaterMovieCatalog) throws InvalidRequestException, PlatformServiceException {
+		TheaterMovieCatalog newCatalog = platformServiceHelper.createTheaterMovieCatalog(theaterMovieCatalog);
+		URI location = URI.create("/theatermoviecatalog"+newCatalog.getId());
+		return ResponseEntity.created(location).body(newCatalog);
 	}
 
 	@Override
 	@PostMapping(value = "/theatermoviecatalog/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TheaterMovieCatalog searchTheaterMovieCatalog(@RequestBody CatalogSearch catalogSearch) {
-		return platformServiceHelper.findTheaterMovieCatalog(catalogSearch).get();
+	public TheaterMovieCatalog searchTheaterMovieCatalog(@RequestBody CatalogSearch catalogSearch) throws ResourceNotFoundException {
+		return platformServiceHelper.findTheaterMovieCatalog(catalogSearch);
 	}
 	
-	@PostMapping(value = "/schedules", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ShowSchedule createShowSchedule(@RequestBody ShowSchedule theaterShowSchedule) {
-		ShowSchedule newTheaterShow = platformServiceHelper.createShowSchedule(theaterShowSchedule);
-		return newTheaterShow;
+	@PostMapping(value = "/showschedules", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ShowSchedule> createShowSchedule(@RequestBody ShowSchedule showSchedule) throws InvalidRequestException, PlatformServiceException {
+		ShowSchedule newShowSchedule = platformServiceHelper.createShowSchedule(showSchedule);
+		URI location = URI.create("/showschedules"+newShowSchedule.getShowScheduleId());
+		return ResponseEntity.created(location).body(newShowSchedule);
 	}
 	
-	@GetMapping(value = "/schedules/{scheduleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ShowSchedule getShowSchedule(@PathVariable("scheduleId") Long scheduleId) {
+	@GetMapping(value = "/showschedules/{scheduleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ShowSchedule getShowSchedule(@PathVariable("scheduleId") Long scheduleId) throws ResourceNotFoundException {
 		return platformServiceHelper.getShowSchedule(scheduleId);
 	}
 	
-	@PutMapping(value = "/schedules/{scheduleId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ShowSchedule updateShowSchedule(@PathVariable("scheduleId") Long scheduleId, @RequestBody ShowSchedule theaterShowSchedule) {
-		return platformServiceHelper.updateShowSchedule(scheduleId, theaterShowSchedule);
+	@PutMapping(value = "/showschedules/{scheduleId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ShowSchedule> updateShowSchedule(@PathVariable("scheduleId") Long scheduleId, @RequestBody ShowSchedule theaterShowSchedule) throws ResourceNotFoundException, InvalidRequestException, PlatformServiceException {
+		ShowSchedule updatedShowSchedule = platformServiceHelper.updateShowSchedule(scheduleId, theaterShowSchedule);
+		return ResponseEntity.ok().body(updatedShowSchedule);
 	}
 	
-	@DeleteMapping(value = "/schedules/{scheduleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public void deleteShowSchedule(@PathVariable("scheduleId") Long scheduleId) {
+	@DeleteMapping(value = "/showschedules/{scheduleId}", produces = MediaType.APPLICATION_JSON_VALUE) 
+	public ResponseEntity<String> deleteShowSchedule(@PathVariable("scheduleId") Long scheduleId) throws ResourceNotFoundException, PlatformServiceException{
 		platformServiceHelper.deleteShowSchedule(scheduleId);
+		return ResponseEntity.ok("The show schedule has been successfully deleted");
 	}
 
 	@Override
 	@PostMapping(value = "/theaters/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TheaterShowSearchResult searchTheaters(@RequestBody TheaterSearch search) {
-		return platformServiceHelper.findTheaters(search).get();
+	public TheaterShowSearchResult searchTheaters(@RequestBody TheaterSearch search) throws InvalidRequestException{
+		return platformServiceHelper.findTheaters(search);
 	}
 
 	@Override
-	@PostMapping(value = "/schedules/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ScheduleSearchResult searchSchedules(@RequestBody ScheduleSearch scheduleSearch) {
+	@PostMapping(value = "/showschedules/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ScheduleSearchResult searchSchedules(@RequestBody ScheduleSearch scheduleSearch) throws InvalidRequestException {
 		return platformServiceHelper.findSchedules(scheduleSearch);
 	} 
 	

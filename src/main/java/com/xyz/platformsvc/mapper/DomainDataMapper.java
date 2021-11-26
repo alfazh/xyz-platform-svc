@@ -1,6 +1,6 @@
 package com.xyz.platformsvc.mapper;
 
-public interface DataMapper <T,U> {
+public interface DomainDataMapper <T,U> {
 	
 	public T toEntityObj(U u);
 	

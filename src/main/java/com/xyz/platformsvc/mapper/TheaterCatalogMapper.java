@@ -10,7 +10,7 @@ import com.xyz.platformsvc.rest.model.Theater;
 import com.xyz.platformsvc.rest.model.TheaterMovieCatalog;
 
 @Component
-public class TheaterCatalogMapper implements DataMapper<TheaterMovieCatalogEntity, TheaterMovieCatalog>{
+public class TheaterCatalogMapper implements DomainDataMapper<TheaterMovieCatalogEntity, TheaterMovieCatalog>{
 
 	@Override
 	public TheaterMovieCatalogEntity toEntityObj(TheaterMovieCatalog theaterMovieCatalog) {

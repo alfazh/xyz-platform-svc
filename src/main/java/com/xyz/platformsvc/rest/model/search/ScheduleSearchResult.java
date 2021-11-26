@@ -1,4 +1,4 @@
-package com.xyz.platformsvc.rest.model.view;
+package com.xyz.platformsvc.rest.model.search;
 
 import java.util.List;
 

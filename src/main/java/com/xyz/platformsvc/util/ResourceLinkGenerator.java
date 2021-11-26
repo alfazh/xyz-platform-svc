@@ -2,8 +2,6 @@ package com.xyz.platformsvc.util;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import java.time.LocalDate;
-
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkRelation;
 
@@ -25,19 +23,9 @@ public class ResourceLinkGenerator {
 		return linkTo(PlatformServiceController.class).slash("theaters").slash(theaterId).withRel(linkRelation);
 	}
 
-	public static Link getShowLink(Long theaterId, Long movieId, Long showId, LinkRelation linkRelation) {
+	public static Link getShowScheduleLink(Long scheduleId, LinkRelation linkRelation) {
 		return linkTo(PlatformServiceController.class)
-				.slash("theaters").slash(theaterId)
-				.slash("movies").slash(movieId)
-				.slash("shows").slash(showId)
-				.withRel(linkRelation);
-	}
-	
-	public static Link getShowScheduleLink(Long theaterId, Long movieId, LocalDate date, LinkRelation linkRelation) {
-		return linkTo(PlatformServiceController.class)
-				.slash("theaters").slash(theaterId)
-				.slash("movies").slash(movieId)
-				.slash("schedule").slash(date)
+				.slash("showschedules").slash(scheduleId)
 				.withRel(linkRelation);
 	}
 	

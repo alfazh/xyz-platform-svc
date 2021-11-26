@@ -6,7 +6,7 @@ import com.xyz.platformsvc.rest.model.Movie;
 import com.xyz.platformsvc.util.ResourceLinkGenerator;
 
 @Component
-public class MovieMapper implements DataMapper<MovieEntity, Movie>{
+public class MovieMapper implements DomainDataMapper<MovieEntity, Movie>{
 
 	@Override
 	public MovieEntity toEntityObj(Movie movie) {
@@ -17,6 +17,7 @@ public class MovieMapper implements DataMapper<MovieEntity, Movie>{
 		movieEntity.setLanguage(movie.getLanguage());
 		movieEntity.setRunTime(movie.getRunTime());
 		movieEntity.setMovieFormat(movie.getMovieFormat());
+		movieEntity.setReleaseDate(movie.getReleaseDate());
 		return movieEntity;
 	}
 
@@ -29,6 +30,7 @@ public class MovieMapper implements DataMapper<MovieEntity, Movie>{
 		movie.setGenre(movieEntity.getGenre());
 		movie.setLanguage(movieEntity.getLanguage());
 		movie.setRunTime(movieEntity.getRunTime());
+		movie.setReleaseDate(movieEntity.getReleaseDate());
 		movie.setMovieFormat(movieEntity.getMovieFormat());
 		movie.add(ResourceLinkGenerator.getMovieLink(movie.getMovieId(), ResourceLinkGenerator.SELF));
 		return movie;

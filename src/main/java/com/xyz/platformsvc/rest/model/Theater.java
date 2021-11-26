@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.xyz.dal.entity.theater.TheaterType;
+import com.xyz.platformsvc.rest.model.screen.TheaterScreen;
 
 public class Theater extends RepresentationModel<Theater>{
 

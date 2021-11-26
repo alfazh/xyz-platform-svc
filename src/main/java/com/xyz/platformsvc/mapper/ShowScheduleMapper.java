@@ -13,28 +13,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.xyz.dal.entity.theater.TheaterMovieCatalogEntity;
+import com.xyz.dal.entity.theater.screen.ScreenSeatRowEntity;
 import com.xyz.dal.entity.theater.screen.TheaterScreenEntity;
-import com.xyz.dal.entity.theater.screen.TheaterScreenLayoutEntity;
 import com.xyz.dal.entity.theater.show.ShowEntity;
 import com.xyz.dal.entity.theater.show.ShowPricingEntity;
 import com.xyz.dal.entity.theater.show.ShowScheduleEntity;
 import com.xyz.dal.entity.theater.show.ShowSeatAllocationEntity;
-import com.xyz.dal.repository.TheaterMovieCatalogRepository;
-import com.xyz.dal.repository.TheaterScreenRepository;
+import com.xyz.dal.repository.theater.TheaterMovieCatalogRepository;
+import com.xyz.dal.repository.theater.screen.TheaterScreenSeatLayoutRepository;
 import com.xyz.platformsvc.rest.model.show.SeatClassPriceGroup;
 import com.xyz.platformsvc.rest.model.show.Show;
 import com.xyz.platformsvc.rest.model.show.ShowSchedule;
 import com.xyz.platformsvc.util.ResourceLinkGenerator;
 
 @Component
-public class ShowScheduleMapper implements DataMapper<ShowScheduleEntity, ShowSchedule> {
-
-	@Autowired
-	TheaterScreenRepository theaterScreenRepository;
+public class ShowScheduleMapper implements DomainDataMapper<ShowScheduleEntity, ShowSchedule> {
 
 	@Autowired
 	TheaterMovieCatalogRepository theaterCatalogRepository;
 
+	@Autowired
+	TheaterScreenSeatLayoutRepository screenSeatLayoutRepository;
+	
 	@Override
 	public ShowScheduleEntity toEntityObj(ShowSchedule showSchedule) {
 		ShowScheduleEntity showScheduleEntity = new ShowScheduleEntity();
@@ -79,20 +79,20 @@ public class ShowScheduleMapper implements DataMapper<ShowScheduleEntity, ShowSc
 				}
 				showEntity.setShowPricing(priceEntityList);
 			} else {
-				List<ShowPricingEntity> newShowPricingEntityList = new ArrayList<>(defaultPriceEntityList);
+				List<ShowPricingEntity> newShowPricingEntityList = getPricingListForShow(defaultPriceEntityList, showEntity);
 				newShowPricingEntityList.stream().forEach(p -> p.setShow(showEntity));
 				showEntity.setShowPricing(newShowPricingEntityList);
 			}
 
 			// screen, seat allocation
-			// FIXME - use bulk query and reference from map
-			TheaterScreenEntity theaterScreenEntity = theaterScreenRepository.getById(show.getTheaterScreen().getId());
+			TheaterScreenEntity theaterScreenEntity = new TheaterScreenEntity();
+			theaterScreenEntity.setScreenId(show.getTheaterScreen().getId());
 			showEntity.setScreen(theaterScreenEntity);
+			
 			Set<ShowSeatAllocationEntity> showSeatAllocationEntityList = new HashSet<>();
-			List<TheaterScreenLayoutEntity> seatLayoutList = theaterScreenEntity.getSeatLayoutList();
-			for (TheaterScreenLayoutEntity layout : seatLayoutList) {
-				showSeatAllocationEntityList
-						.addAll(getSeatAllocationList(showEntity, layout.getRowName(), layout.getNumSeats()));
+			List<ScreenSeatRowEntity> seatLayoutList = screenSeatLayoutRepository.findByScreenId(theaterScreenEntity.getScreenId());
+			for (ScreenSeatRowEntity layout : seatLayoutList) {
+				showSeatAllocationEntityList.addAll(getSeatAllocationList(showEntity, layout.getRowName(), layout.getNumSeats()));
 
 			}
 			showEntity.setShowSeatAllocation(showSeatAllocationEntityList);
@@ -104,6 +104,20 @@ public class ShowScheduleMapper implements DataMapper<ShowScheduleEntity, ShowSc
 		showScheduleEntity.setShowList(showEntityList);
 
 		return showScheduleEntity;
+	}
+
+	private List<ShowPricingEntity> getPricingListForShow(List<ShowPricingEntity> priceEntityList,
+			ShowEntity showEntity) {
+		List<ShowPricingEntity> showPriceEntityList = new ArrayList<>();
+		for (ShowPricingEntity priceGrp : priceEntityList) {
+			ShowPricingEntity newEntity = new ShowPricingEntity();
+			newEntity.setPrice(priceGrp.getPrice());
+			newEntity.setSeatClass(priceGrp.getSeatClass());
+			newEntity.setShow(showEntity);
+			showPriceEntityList.add(newEntity);
+		}
+		
+		return showPriceEntityList;
 	}
 
 	private Set<? extends ShowSeatAllocationEntity> getSeatAllocationList(ShowEntity scheduleEntity, String row,
@@ -136,7 +150,6 @@ public class ShowScheduleMapper implements DataMapper<ShowScheduleEntity, ShowSc
 				Show show = new Show();
 				show.setId(showEntity.getShowId());
 				show.setTime(showEntity.getTime());
-				show.add(ResourceLinkGenerator.getShowLink(theaterId, movieId, show.getId(), ResourceLinkGenerator.SELF));
 				//add link to theater
 				show.add(ResourceLinkGenerator.getTheaterScreenLink(theaterId, showEntity.getScreen().getScreenId(), ResourceLinkGenerator.THEATER_SCREEN));
 				showList.add(show);
@@ -145,7 +158,7 @@ public class ShowScheduleMapper implements DataMapper<ShowScheduleEntity, ShowSc
 		}
 		
 		//add links
-		showSchedule.add(ResourceLinkGenerator.getShowScheduleLink(theaterId, movieId, showScheduleEntity.getDate(), ResourceLinkGenerator.SELF));
+		showSchedule.add(ResourceLinkGenerator.getShowScheduleLink(showScheduleEntity.getShowScheduleId(), ResourceLinkGenerator.SELF));
 		showSchedule.add(ResourceLinkGenerator.getTheaterLink(theaterId, ResourceLinkGenerator.THEATER));
 		showSchedule.add(ResourceLinkGenerator.getMovieLink(movieId, ResourceLinkGenerator.MOVIE));
 		

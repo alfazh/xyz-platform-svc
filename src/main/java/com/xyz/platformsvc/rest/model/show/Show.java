@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import com.xyz.platformsvc.rest.model.TheaterScreen;
+import com.xyz.platformsvc.rest.model.screen.TheaterScreen;
 
 public class Show extends RepresentationModel<Show> {
 
